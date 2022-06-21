@@ -50,6 +50,6 @@ There is corresponding data to be processed under each folder.
     ```   
   + To perform psds, run
     ```shell script
-    cd ../../Semi-supervised SEDT
+    cd ../Semi-supervised SEDT
     ./eval.sh
     ```  
