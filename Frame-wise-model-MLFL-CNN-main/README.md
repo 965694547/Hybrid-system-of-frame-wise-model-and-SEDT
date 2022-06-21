@@ -1,10 +1,10 @@
 # Frame-wise-model-MLFL-CNN
 Sound Event Detection
 ## Notebook
-MLFL -> IFSL_1_European_weak+IFDC_three_branch_addIFDC_metric
-CRNN model -> pb_sed
-CNN model -> pb_sed
-SEDT -> sound_event_detection_transformer-main
+### MLFL -> IFSL_1_European_weak+IFDC_three_branch_addIFDC_metric
+### CRNN model -> pb_sed
+### CNN model -> pb_sed
+### SEDT -> Semi-supervised SEDT
 ## Prepare
 There is corresponding data to be processed under each folder.
 ## Train models
@@ -50,6 +50,6 @@ There is corresponding data to be processed under each folder.
     ```   
   + To perform psds, run
     ```shell script
-    cd sound_event_detection_transformer-main
+    cd ../../Semi-supervised SEDT
     ./eval.sh
     ```  
