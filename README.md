@@ -13,3 +13,9 @@ For the frame-wise model, the ICT-TOSHIBA system of DCASE 2021 Task 4 is used, w
 
 ## Contact us
 Please don't hesitate to contact us should you have any question. You can email me at `guozhifang21s@ict.ac.cn`.
+
+## Refences
+- [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection](arXiv preprint arXiv:2110.02011), Y. Zhirong, *et al*.
+- [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer](arXiv preprint arXiv:2111.15222), Y. Zhirong, *et al*.
+- [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE
+2021 TASK 4]([arXiv preprint arXiv:2111.15222](https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf)), T. Gangyi, *et al*.
