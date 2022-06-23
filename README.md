@@ -1,6 +1,6 @@
 # Hybrid-system-of-frame-wise-model-and-SEDT
 ## Introduction
-This code aims at sound event detection. The dataset utilized in our experiments is from DCASE (IEEE AASP Challenge on Detection and Classification of Acoustic Scenes and Events), more specifically, from [DCASE2021 task4](https://dcase.community/challenge2021/task-sound-event-detection-and-separation-in-domestic-environments) and [DCASE2022 task4](https://dcase.community/challenge2022/task-sound-event-detection-in-domestic-environments#evaluation-set). The system combines two considerably different models: an end-to-end Sound Event Detection Transformer (SEDT) and a frame-wise model (MLFL-CNN).
+This code aims at sound event detection. The dataset utilized in our experiments is from DCASE (IEEE AASP Challenge on Detection and Classification of Acoustic Scenes and Events), more specifically, from [DCASE2021 task4](https://dcase.community/challenge2021/task-sound-event-detection-and-separation-in-domestic-environments) and [DCASE2022 task4](https://dcase.community/challenge2022/task-sound-event-detection-in-domestic-environments#evaluation-set). We borrow some codes from [pb_sed](https://github.com/fgnt/pb_sed/tree/0ce516e4c49c77656ff6aee200f45040b7d0eb83). The system combines two considerably different models: an end-to-end Sound Event Detection Transformer (SEDT) and a frame-wise model (MLFL-CNN).
 
 We're so glad if you're interested in using it for research purpose or DCASE participation. Please don't hesitate to contact us should you have any question.
 
@@ -21,8 +21,6 @@ Please don't hesitate to contact us should you have any question. You can email 
 - [FORWARD-BACKWARD CONVOLUTIONAL RECURRENT NEURAL NETWORKS AND
 TAG-CONDITIONED CONVOLUTIONAL NEURAL NETWORKS FOR
 WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
-
-We borrow some codes from [pb_sed](https://github.com/fgnt/pb_sed/tree/0ce516e4c49c77656ff6aee200f45040b7d0eb83)
 
 ## Citation
 ```
