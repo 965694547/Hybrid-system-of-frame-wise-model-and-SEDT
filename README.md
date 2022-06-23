@@ -20,7 +20,7 @@ Please don't hesitate to contact us should you have any question. You can email 
 - [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE 2021 TASK 4 (https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf), T. Gangyi, *et al*.
 - [FORWARD-BACKWARD CONVOLUTIONAL RECURRENT NEURAL NETWORKS AND
 TAG-CONDITIONED CONVOLUTIONAL NEURAL NETWORKS FOR
-WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
+WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION] (https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
 
 ## Citation
 ```
