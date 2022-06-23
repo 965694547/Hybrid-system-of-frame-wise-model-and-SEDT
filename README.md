@@ -22,6 +22,8 @@ Please don't hesitate to contact us should you have any question. You can email 
 TAG-CONDITIONED CONVOLUTIONAL NEURAL NETWORKS FOR
 WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION] (https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
 
+We borrow some codes from [pb_sed](https://github.com/fgnt/pb_sed/tree/0ce516e4c49c77656ff6aee200f45040b7d0eb83)
+
 ## Citation
 ```
 @inproceedings{Ebbers2020,
