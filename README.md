@@ -15,12 +15,12 @@ For the frame-wise model, the ICT-TOSHIBA system of DCASE 2021 Task 4 is used, w
 Please don't hesitate to contact us should you have any question. You can email me at `guozhifang21s@ict.ac.cn`.
 
 ## Refences
-- [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection] (arXiv preprint arXiv:2110.02011), Y. Zhirong, *et al*.
-- [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer] (arXiv preprint arXiv:2111.15222), Y. Zhirong, *et al*.
-- [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE 2021 TASK 4 (https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf), T. Gangyi, *et al*.
+- [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection](https://arxiv.org/pdf/2111.15222.pdf), Y. Zhirong, *et al*.
+- [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer](https://arxiv.org/pdf/2111.15222.pdf), Y. Zhirong, *et al*.
+- [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE 2021 TASK 4](https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf), T. Gangyi, *et al*.
 - [FORWARD-BACKWARD CONVOLUTIONAL RECURRENT NEURAL NETWORKS AND
 TAG-CONDITIONED CONVOLUTIONAL NEURAL NETWORKS FOR
-WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION] (https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
+WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
 
 We borrow some codes from [pb_sed](https://github.com/fgnt/pb_sed/tree/0ce516e4c49c77656ff6aee200f45040b7d0eb83)
 
