@@ -33,24 +33,10 @@ WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/do
     month = "June"
 }
 @article{
-  author    = {Zhirong Ye and
-               Xiangdong Wang and
-               Hong Liu and
-               Yueliang Qian and
-               Rui Tao and
-               Long Yan and
-               Kazushige Ouchi},
-  title     = {Sound Event Detection Transformer: An Event-based End-to-End Model
-               for Sound Event Detection},
-  journal   = {CoRR},
-  volume    = {abs/2110.02011},
-  year      = {2021},
-  url       = {https://arxiv.org/abs/2110.02011},
-  eprinttype = {arXiv},
-  eprint    = {2110.02011},
-  timestamp = {Fri, 08 Oct 2021 15:47:55 +0200},
-  biburl    = {https://dblp.org/rec/journals/corr/abs-2110-02011.bib},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
+  author = "Zhirong, Ye and Xiangdong, Wang and Hong, Liu and Yueliang, Qian and Rui, Tao and Long, Yan and Kazushige, Ouchi",
+  title = "Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection",
+  year = "2021",
+  url = "https://arxiv.org/abs/2110.02011",
 }
 @inproceedings{Ebbers2020,
     author = "Ebbers, Janek and Haeb-Umbach, Reinhold",
