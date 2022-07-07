@@ -44,6 +44,13 @@ WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/do
   year = "2021",
   url = "https://arxiv.org/abs/2111.15222",
 }
+@techreport{Tian2021,
+    Author = "Tian, Gangyi and Huang, Yuxin and Ye, Zhirong and Ma, Shuo and Wang, Xiangdong and Liu, Hong and Qian, Yueliang and Tao, Rui and Yan, Long and Ouchi, Kazushige and Ebbers, Janek Haeb-Umbach, Reinhold",
+    title = "Sound Event Detection Using Metric Learning And Focal Loss For DCASE 2021 Task 4",
+    institution = "DCASE2021 Challenge",
+    year = "2021",
+    month = "June",
+}
 @inproceedings{Ebbers2020,
     author = "Ebbers, Janek and Haeb-Umbach, Reinhold",
     title = "Forward-Backward Convolutional Recurrent Neural Networks and Tag-Conditioned Convolutional Neural Networks for Weakly Labeled Semi-Supervised Sound Event Detection",
