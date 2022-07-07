@@ -38,6 +38,12 @@ WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/do
   year = "2021",
   url = "https://arxiv.org/abs/2110.02011",
 }
+@article{
+  author = "Zhirong, Ye and Xiangdong, Wang and Hong, Liu and Yueliang, Qian and Rui, Tao and Long, Yan and Kazushige, Ouchi",
+  title = "SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer",
+  year = "2021",
+  url = "https://arxiv.org/abs/2111.15222",
+}
 @inproceedings{Ebbers2020,
     author = "Ebbers, Janek and Haeb-Umbach, Reinhold",
     title = "Forward-Backward Convolutional Recurrent Neural Networks and Tag-Conditioned Convolutional Neural Networks for Weakly Labeled Semi-Supervised Sound Event Detection",
