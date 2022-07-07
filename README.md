@@ -28,7 +28,7 @@ WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/do
 @techreport{Li2022d,
     author = "Li, Yiming and Guo, Zhifang and Ye, Zhirong and Wang, Xiangdong and Liu, Hong and Qian, Yueliang and Tao, Rui and Yan, Long and Ouchi, Kazushige",
     title = "A Hybrid System Of Sound Event Detection Transformer And Frame-Wise Model For Dcase 2022 Task 4",
-    institution = "DCASE2022 Challenge",
+    url = "https://dcase.community/documents/challenge2022/technical_reports/DCASE2022_Li_98_t4.pdf",
     year = "2022",
     month = "June"
 }
@@ -47,7 +47,7 @@ WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/do
 @techreport{Tian2021,
     author = "Tian, Gangyi and Huang, Yuxin and Ye, Zhirong and Ma, Shuo and Wang, Xiangdong and Liu, Hong and Qian, Yueliang and Tao, Rui and Yan, Long and Ouchi, Kazushige and Ebbers, Janek Haeb-Umbach, Reinhold",
     title = "Sound Event Detection Using Metric Learning And Focal Loss For DCASE 2021 Task 4",
-    institution = "DCASE2021 Challenge",
+    url = "https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf",
     year = "2021",
     month = "June",
 }
