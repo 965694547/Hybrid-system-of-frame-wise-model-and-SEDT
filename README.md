@@ -20,9 +20,6 @@ If you use our code, you are encouraged to cite the following papers, especially
 - [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection](https://arxiv.org/pdf/2111.15222.pdf), Zhirong Ye and Xiangdong Wang and Hong Liu and Yueliang Qian and Rui Tao and Long Yan and Kazushige Ouchi.
 - [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer](https://arxiv.org/pdf/2111.15222.pdf), Zhirong Ye and Xiangdong Wang and Hong Liu and Yueliang Qian and Rui Tao and Long Yan and Kazushige Ouchi.
 - [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE 2021 TASK 4](https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf), Gangyi Tian and Yuxin Huang and Zhirong Ye and Shuo Ma and Xiangdong Wang and Hong Liu and Yueliang Qian and Rui Tao and Long Yan and Kazushige Ouchi and Janek Ebbers and Reinhold Haeb-Umbach.
-- [FORWARD-BACKWARD CONVOLUTIONAL RECURRENT NEURAL NETWORKS AND
-TAG-CONDITIONED CONVOLUTIONAL NEURAL NETWORKS FOR
-WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers and Reinhold Haeb-Umbach.
 
 ## Citation
 ```
@@ -51,14 +48,5 @@ WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/do
     url = "https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf",
     year = "2021",
     month = "June",
-}
-@inproceedings{Ebbers2020,
-    author = "Ebbers, Janek and Haeb-Umbach, Reinhold",
-    title = "Forward-Backward Convolutional Recurrent Neural Networks and Tag-Conditioned Convolutional Neural Networks for Weakly Labeled Semi-Supervised Sound Event Detection",
-    booktitle = "Proceedings of the Detection and Classification of Acoustic Scenes and Events 2020 Workshop (DCASE2020)",
-    address = "Tokyo, Japan",
-    month = "November",
-    year = "2020",
-    pages = "41--45"
 }
 ```
