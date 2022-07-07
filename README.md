@@ -15,15 +15,23 @@ For the frame-wise model, the ICT-TOSHIBA system of DCASE 2021 Task 4 is used, w
 Please don't hesitate to contact us should you have any question. You can email me at `guozhifang21s@ict.ac.cn`.
 
 ## Refences
-- [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection](https://arxiv.org/pdf/2111.15222.pdf), Y. Zhirong, *et al*.
-- [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer](https://arxiv.org/pdf/2111.15222.pdf), Y. Zhirong, *et al*.
-- [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE 2021 TASK 4](https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf), T. Gangyi, *et al*.
+- [A Hybrid System Of Sound Event Detection Transformer And Frame-Wise Model For Dcase 2022 Task 4](https://dcase.community/documents/challenge2022/technical_reports/DCASE2022_Li_98_t4.pdf), Yiming Li, *et al*.
+- [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection](https://arxiv.org/pdf/2111.15222.pdf), Zhirong Ye, *et al*.
+- [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer](https://arxiv.org/pdf/2111.15222.pdf), Zhirong Ye, *et al*.
+- [SOUND EVENT DETECTION USING METRIC LEARNING AND FOCAL LOSS FOR DCASE 2021 TASK 4](https://dcase.community/documents/challenge2021/technical_reports/DCASE2021_Tian_130_t4.pdf), Gangyi Tian, *et al*.
 - [FORWARD-BACKWARD CONVOLUTIONAL RECURRENT NEURAL NETWORKS AND
 TAG-CONDITIONED CONVOLUTIONAL NEURAL NETWORKS FOR
 WEAKLY LABELED SEMI-SUPERVISED SOUND EVENT DETECTION](https://dcase.community/documents/workshop2020/proceedings/DCASE2020Workshop_Ebbers_69.pdf), Janek Ebbers, *et al*.
 
 ## Citation
 ```
+@techreport{Li2022d,
+    Author = "Li, Yiming and Guo, Zhifang and Ye, Zhirong and Wang, Xiangdong and Liu, Hong and Qian, Yueliang and Tao, Rui and Yan, Long and Ouchi, Kazushige",
+    title = "A Hybrid System Of Sound Event Detection Transformer And Frame-Wise Model For Dcase 2022 Task 4",
+    institution = "DCASE2022 Challenge",
+    year = "2022",
+    month = "June"
+}
 @inproceedings{Ebbers2020,
     author = "Ebbers, Janek and Haeb-Umbach, Reinhold",
     title = "Forward-Backward Convolutional Recurrent Neural Networks and Tag-Conditioned Convolutional Neural Networks for Weakly Labeled Semi-Supervised Sound Event Detection",
