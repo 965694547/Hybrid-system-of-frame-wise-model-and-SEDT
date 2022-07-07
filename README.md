@@ -14,8 +14,9 @@ For the frame-wise model, the ICT-TOSHIBA system of DCASE 2021 Task 4 is used, w
 ## Contact us
 Please don't hesitate to contact us should you have any question. You can email me at `guozhifang21s@ict.ac.cn`.
 
+## References
 If you use our code, you are encouraged to cite the following papers, especially the first one. 
-## Refences
+
 - [A Hybrid System Of Sound Event Detection Transformer And Frame-Wise Model For Dcase 2022 Task 4](https://dcase.community/documents/challenge2022/technical_reports/DCASE2022_Li_98_t4.pdf), Yiming Li and Zhifang Guo and Zhirong Ye and Xiangdong Wang and Hong Liu and Yueliang Qian and Rui Tao and Long Yan and Kazushige Ouchi.
 - [Sound Event Detection Transformer: An Event-based End-to-End Model for Sound Event Detection](https://arxiv.org/pdf/2111.15222.pdf), Zhirong Ye and Xiangdong Wang and Hong Liu and Yueliang Qian and Rui Tao and Long Yan and Kazushige Ouchi.
 - [SP-SEDT: Self-supervised Pre-training for Sound Event Detection Transformer](https://arxiv.org/pdf/2111.15222.pdf), Zhirong Ye and Xiangdong Wang and Hong Liu and Yueliang Qian and Rui Tao and Long Yan and Kazushige Ouchi.
