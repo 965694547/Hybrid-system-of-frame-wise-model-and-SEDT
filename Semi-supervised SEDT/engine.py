@@ -1,4 +1,5 @@
 import math
+import os
 import sys
 import time
 import os
@@ -13,12 +14,10 @@ from utilities.distribute import reduce_dict, get_reduced_loss
 from utilities.mixup import mixup_data, mixup_label_unlabel
 from utilities.utils import MetricLogger, SmoothedValue, AverageMeter, to_cuda_if_available
 from collections import Counter
+from data_utils.SedData import get_durations_df
+from evaluations.evaluation_measures import compute_psds_from_operating_points
 import config as cfg
 import numpy as np
-from evaluation.evaluation_measures import compute_psds_from_operating_points, compute_psds_from_operating_points_tune
-from data_utils.SedData import get_durations_df
-
-from src import trainer
 
 test_thresholds = np.arange(
     1 / (cfg.test_n_thresholds * 2), 1, 1 / cfg.test_n_thresholds
@@ -170,11 +169,14 @@ def semi_train(train_loader, model, ema, criterion, optimizer, c_epoch, accumrat
         unsup_losses = sum(unsup_loss_dict[k] * weight_dict[k] for k in unsup_loss_dict.keys() if k in weight_dict)
         unsup_loss_value = get_reduced_loss(unsup_loss_dict, weight_dict, metric_logger, prefix="unsup_")
 
+
         total_losses = sup_losses + unsup_losses
         if not (math.isfinite(total_losses)):
             print("Loss is infinite, stopping training")
             sys.exit(1)
         total_losses.backward()
+
+
 
         if (i + 1) % accumrating_gradient_steps == 0:
             if max_norm > 0:
@@ -203,22 +205,27 @@ def semi_train(train_loader, model, ema, criterion, optimizer, c_epoch, accumrat
 
 def evaluate(model, criterion, postprocessors, dataloader, decoder, ref_df, fusion_strategy, at=True, cal_seg=False, cal_clip=False, mode='vali'):
     logger = create_logger(__name__ + "/" + inspect.currentframe().f_code.co_name, terminal_level=cfg.terminal_level)
-    psds_prediction_dfs, SED_SEDT_psds_prediction_dfs_improve1, SED_SEDT_psds_prediction_dfs_improve2, SED_SEDT_psds_prediction_dfs_improve12 = get_sedt_predictions(model, criterion, postprocessors, dataloader, decoder, fusion_strategy, ref_df, at, cal_seg, cal_clip, mode)
+    audio_tag_dfs, dec_prediction_dfs, psds_prediction_dfs = get_sedt_predictions(model, criterion, postprocessors, dataloader, decoder, fusion_strategy, at, mode)
+
+
+    if not audio_tag_dfs.empty:
+        clip_metric = audio_tagging_results(ref_df, audio_tag_dfs)
+        logger.info(f"AT Class-wise clip metrics \n {'=' * 50} \n {clip_metric}")
 
     metrics = {}
     logger.info(f"decoder output \n {'=' * 50}")
-    for at_m in fusion_strategy:
+    for at_m, dec_pred in dec_prediction_dfs.items():
         logger.info(f"Fusion strategy: {at_m}")
-        SED_SEDT_psds_prediction_improve1 = {c_th: SED_SEDT_psds_prediction_dfs_improve1[at_m, c_th] for c_th in test_thresholds}
-        SED_SEDT_psds_prediction_improve2 = {c_th: SED_SEDT_psds_prediction_dfs_improve2[at_m, c_th] for c_th in test_thresholds}
-        SED_SEDT_psds_prediction_improve12 = {c_th: SED_SEDT_psds_prediction_dfs_improve12[at_m, c_th] for c_th in test_thresholds}
+        event_macro_f1 = compute_metrics(dec_pred, ref_df, cal_seg=cal_seg, cal_clip=cal_clip)
+        metrics[at_m] = event_macro_f1
+        psds_prediction = {c_th: psds_prediction_dfs[at_m, c_th] for c_th in test_thresholds}
         if mode == 'vali':
             dur_csv = get_durations_df(cfg.validation)
         elif mode == 'eval':
             dur_csv = get_durations_df(cfg.eval_desed)
-
+        #pdb.set_trace()
         psds_score_scenario1 = compute_psds_from_operating_points(
-            SED_SEDT_psds_prediction_improve1,
+            psds_prediction,
             ref_df,
             dur_csv,
             dtc_threshold=0.7,
@@ -227,7 +234,7 @@ def evaluate(model, criterion, postprocessors, dataloader, decoder, ref_df, fusi
             alpha_st=1,
         )
         psds_score_scenario2 = compute_psds_from_operating_points(
-            SED_SEDT_psds_prediction_improve1,
+            psds_prediction,
             ref_df,
             dur_csv,
             dtc_threshold=0.1,
@@ -236,55 +243,14 @@ def evaluate(model, criterion, postprocessors, dataloader, decoder, ref_df, fusi
             alpha_ct=0.5,
             alpha_st=1,
         )
-        o = '[ result & improve1 %s psds_score_scenario1: %f, psds_score_scenario2 : %f ]' % (mode, psds_score_scenario1, psds_score_scenario2)
-        logger.info(o)
-
-        psds_score_scenario1 = compute_psds_from_operating_points(
-            SED_SEDT_psds_prediction_improve2,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.7,
-            gtc_threshold=0.7,
-            alpha_ct=0,
-            alpha_st=1,
-        )
-        psds_score_scenario2 = compute_psds_from_operating_points(
-            SED_SEDT_psds_prediction_improve2,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.1,
-            gtc_threshold=0.1,
-            cttc_threshold=0.3,
-            alpha_ct=0.5,
-            alpha_st=1,
-        )
-        o = '[ result & improve2 %s psds_score_scenario1: %f, psds_score_scenario2 : %f ]' % (mode, psds_score_scenario1, psds_score_scenario2)
-        logger.info(o)
-
-        psds_score_scenario1 = compute_psds_from_operating_points(
-            SED_SEDT_psds_prediction_improve12,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.7,
-            gtc_threshold=0.7,
-            alpha_ct=0,
-            alpha_st=1,
-        )
-        psds_score_scenario2 = compute_psds_from_operating_points(
-            SED_SEDT_psds_prediction_improve12,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.1,
-            gtc_threshold=0.1,
-            cttc_threshold=0.3,
-            alpha_ct=0.5,
-            alpha_st=1,
-        )
-        o = '[ result & improve12 %s psds_score_scenario1: %f, psds_score_scenario2 : %f ]' % (mode, psds_score_scenario1, psds_score_scenario2)
+        o = '[ result sed %s psds_score_scenario1: %f, psds_score_scenario2 : %f ]' % (mode, psds_score_scenario1, psds_score_scenario2)
+        # show result
         logger.info(o)
     return metrics
 
-def get_sedt_predictions(model, criterion, postprocessors, dataloader, decoder, fusion_strategy, ref_df, at=True, cal_seg=False, cal_clip=False, mode='eval'):
+
+
+def get_sedt_predictions(model, criterion, postprocessors, dataloader, decoder, fusion_strategy, at=True, mode='eval'):
     """ Get the predictions of a trained model on a specific set
     Args:
         model: torch.Module, a trained pytorch model (you usually want it to be in .eval() mode).
@@ -301,167 +267,102 @@ def get_sedt_predictions(model, criterion, postprocessors, dataloader, decoder, 
     # metric_logger.add_meter('class_error', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
     epoch_time = time.time()
     decoding_time = 0.
+    dec_prediction_dfs = {}
+    audio_tag_dfs = pd.DataFrame()
+    for at_m in fusion_strategy:
+        dec_prediction_dfs[at_m] = pd.DataFrame()
 
-    psds_prediction_dfs = dict()
-    SEDT_psds_prediction_dfs_0 = dict()
+    # Get predictions
+    prefetcher = data_prefetcher(dataloader, return_indexes=True)
+    i = -1
+    (input_data, targets), indexes = prefetcher.next()
+
+    psds_prediction_dfs = {}
     for at_m in fusion_strategy:
         for c_th in test_thresholds:
             psds_prediction_dfs[at_m, c_th] = pd.DataFrame()
-    for at_m in fusion_strategy:
-        for c_th in test_thresholds:
-            predictions_path = "predictions_vali_no_additional_data"
-            #predictions_path = "predictions_vali_additional_data"
-            pred = pd.read_csv(os.path.join(predictions_path, f"predictions_th_{c_th:.2f}.tsv"), sep="\t")
-            psds_prediction_dfs[at_m, c_th] = psds_prediction_dfs[at_m, c_th].append(pred, ignore_index=True)
-        SEDT_psds_prediction_dfs_0[at_m] = pd.read_csv("vali_no_additional_sedt_detection_score_mat.tsv", sep="\t")
-        #SEDT_psds_prediction_dfs_0[at_m] = pd.read_csv("vali_additional_sedt_detection_score_mat.tsv", sep="\t")
-    SED_lst = [filename.replace(".wav", "") for filename in dataloader.dataset.filenames.to_list()]
+    psds_path = os.path.join(cfg.dir_root, 'psds', mode)
+    os.makedirs(psds_path, exist_ok=True)
 
-    cnn_detection_score_mat = np.load('cnn_detection_score_mat.npy')
-    example_ids = np.load('example_ids.npy')
-    SEDP_cnn_preds = list()
-    top_LEN = 500
-    top_FLEN = 498
-    cut = (top_LEN - top_FLEN) // 2
-    for filename in SED_lst:
-        example_ids_i = np.where(example_ids == filename)
-        cnn_input = cnn_detection_score_mat[example_ids_i].squeeze()[:top_FLEN, :]
-        cnn_output = np.zeros((top_LEN, cnn_input.shape[1]))
-        cnn_output[cut:(top_LEN - cut)] = cnn_input
-        SEDP_cnn_preds.append(cnn_output)
-    SEDP_cnn_preds = np.array(SEDP_cnn_preds)
+    while input_data is not None:
+        i += 1
+        with torch.no_grad():
+            outputs = model(input_data)
+        # ##############
+        # compute losses
+        # ##############
+        weak_mask = None
+        strong_mask = slice(len(input_data.tensors))
+        loss_dict, indices = criterion(outputs, targets, weak_mask, strong_mask)
+        weight_dict = criterion.weight_dict
 
-    SEDP_CNN_psds_prediction_dfs_improve = dict()
-    SED_SEDT_psds_prediction_dfs_improve1 = dict()
-    SED_SEDT_psds_prediction_dfs_improve2 = dict()
-    SED_SEDT_psds_prediction_dfs_improve12 = dict()
-    SED_model_improve = trainer.trainer(cfg.task_name, cfg.sed_model_name, True, 1)
-    SEDT_SED_model_improve1 = trainer.trainer(cfg.task_name, cfg.sed_model_name, True, "nst_1")
-    SEDT_SED_model_improve2 = trainer.trainer(cfg.task_name, cfg.sed_model_name, True, "nst_2")
-    SEDT_SED_model_improve12 = trainer.trainer(cfg.task_name, cfg.sed_model_name, True, "nst_12")
-    for at_m in fusion_strategy:
-        SEDP_CNN_psds_prediction_dfs_improve = SED_model_improve.post_sedt(
-            SED_lst,
-            np.ones((SEDP_cnn_preds.shape[0], SEDP_cnn_preds.shape[-1])),
-            SEDP_cnn_preds,
-            ref_df,
-            SEDP_CNN_psds_prediction_dfs_improve,
-            at_m,
-            cfg.test_n_thresholds
-        )
-        logger.info(f"result sedp cnn improve1")
+        # reduce losses over all GPUs for logging purposes
+        loss_value = get_reduced_loss(loss_dict, weight_dict, metric_logger)
 
-    for at_m in fusion_strategy:
-        vote_list = list()
-        psds_prediction = {c_th: psds_prediction_dfs[at_m, c_th] for c_th in test_thresholds}
-        SEDP_CNN_psds_prediction_improve = {c_th: SEDP_CNN_psds_prediction_dfs_improve[at_m, c_th] for c_th in test_thresholds}
+        # ###################
+        # get decoder results
+        # ###################
+        orig_target_sizes = torch.stack([t["orig_size"] for t in targets], dim=0)
+        if at:
+            assert "at" in outputs
+            audio_tags = outputs["at"]
+            audio_tags = (audio_tags > 0.5).long()
+            for j, audio_tag in enumerate(audio_tags):
+                audio_tag_res = decoder.decode_weak(audio_tag)
+                audio_tag_res = pd.DataFrame(audio_tag_res, columns=["event_label"])
+                audio_tag_res["filename"] = dataloader.dataset.filenames.iloc[indexes[j]]
+                audio_tag_res["onset"] = 0
+                audio_tag_res["offset"] = 0
+                audio_tag_dfs = audio_tag_dfs.append(audio_tag_res)
+        else:
+            audio_tags = None
 
-        if mode == 'vali':
-            dur_csv = get_durations_df(cfg.validation)
-        elif mode == 'eval':
-            dur_csv = get_durations_df(cfg.eval_desed)
-
-        psds_score_scenario1_sedt, psds_score_per_class_1_sedt = compute_psds_from_operating_points_tune(
-            psds_prediction,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.7,
-            gtc_threshold=0.7,
-            alpha_ct=0,
-            alpha_st=1,
-        )
-        psds_score_scenario2_sedt, psds_score_per_class_2_sedt = compute_psds_from_operating_points_tune(
-            psds_prediction,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.1,
-            gtc_threshold=0.1,
-            cttc_threshold=0.3,
-            alpha_ct=0.5,
-            alpha_st=1,
-        )
-        o = '[ result sedt %s psds_score_scenario1: %f, psds_score_scenario2 : %f ]' % (mode, psds_score_scenario1_sedt, psds_score_scenario2_sedt)
-        logger.info(o)
-
-        psds_score_scenario1_sedpcnn, psds_score_per_class_1_sedpcnn = compute_psds_from_operating_points_tune(
-            SEDP_CNN_psds_prediction_improve,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.7,
-            gtc_threshold=0.7,
-            alpha_ct=0,
-            alpha_st=1,
-        )
-        psds_score_scenario2_sedpcnn, psds_score_per_class_2_sedpcnn = compute_psds_from_operating_points_tune(
-            SEDP_CNN_psds_prediction_improve,
-            ref_df,
-            dur_csv,
-            dtc_threshold=0.1,
-            gtc_threshold=0.1,
-            cttc_threshold=0.3,
-            alpha_ct=0.5,
-            alpha_st=1,
-        )
-        o = '[ result sedp_cnn improve1 %s psds_score_scenario1: %f, psds_score_scenario2 : %f ]' % (mode, psds_score_scenario1_sedpcnn, psds_score_scenario2_sedpcnn)
-        logger.info(o)
-
-        sum = psds_score_per_class_1_sedt + psds_score_per_class_1_sedpcnn
-        vote_SEDT = psds_score_per_class_1_sedt / sum
-        vote_SEDPCNN = psds_score_per_class_1_sedpcnn / sum
-        SED_SEDT_psds_prediction_dfs_improve1 = SEDT_SED_model_improve1.post_sedt(
-            SED_lst,
-            None,
-            None,
-            ref_df,
-            SED_SEDT_psds_prediction_dfs_improve1,
-            at_m,
-            cfg.test_n_thresholds,
-            [SEDT_psds_prediction_dfs_0, SEDP_cnn_preds],
-            [vote_SEDT, vote_SEDPCNN]
-        )
-        logger.info(f"result &  improve1")
-        vote_list.append([vote_SEDT, vote_SEDPCNN])
-
-        sum = psds_score_per_class_2_sedt + psds_score_per_class_2_sedpcnn
-        vote_SEDT = psds_score_per_class_2_sedt / sum
-        vote_SEDPCNN = psds_score_per_class_2_sedpcnn / sum
-        SED_SEDT_psds_prediction_dfs_improve2 = SEDT_SED_model_improve2.post_sedt(
-            SED_lst,
-            None,
-            None,
-            ref_df,
-            SED_SEDT_psds_prediction_dfs_improve2,
-            at_m,
-            cfg.test_n_thresholds,
-            [SEDT_psds_prediction_dfs_0, SEDP_cnn_preds],
-            [vote_SEDT, vote_SEDPCNN]
-        )
-        logger.info(f"result &  improve2")
-        vote_list.append([vote_SEDT, vote_SEDPCNN])
-        
-        sum = psds_score_per_class_1_sedt + psds_score_per_class_1_sedpcnn + psds_score_per_class_2_sedt + psds_score_per_class_2_sedpcnn
-        vote_SEDT = (psds_score_per_class_1_sedt + psds_score_per_class_2_sedt) / sum
-        vote_SEDPCNN = (psds_score_per_class_1_sedpcnn + psds_score_per_class_2_sedpcnn) / sum
-        SED_SEDT_psds_prediction_dfs_improve12 = SEDT_SED_model_improve12.post_sedt(
-            SED_lst,
-            None,
-            None,
-            ref_df,
-            SED_SEDT_psds_prediction_dfs_improve12,
-            at_m,
-            cfg.test_n_thresholds,
-            [SEDT_psds_prediction_dfs_0, SEDP_cnn_preds],
-            [vote_SEDT, vote_SEDPCNN]
-        )
-        logger.info(f"result &  improve12")
-        vote_list.append([vote_SEDT, vote_SEDPCNN])
-        np.save("vote_no_additional.npy", np.array(vote_list))
-        #np.save("vote_additional.npy", np.array(vote_list))
+        decoding_start = time.time()
+        for at_m in fusion_strategy:
+            results = postprocessors['bbox'](outputs, orig_target_sizes, audio_tags=audio_tags, at_m=at_m)
+            at_m_path = os.path.join(psds_path, str(at_m))
+            os.makedirs(at_m_path, exist_ok=True)
+            for j, res in enumerate(results):
+                for item in res:
+                    res[item] = res[item].cpu()
+                pred = decoder.decode_strong(res, threshold=0.5)
+                pred = pd.DataFrame(pred, columns=["event_label", "onset", "offset", "score"])
+                # Put them in seconds
+                pred.loc[:, ["onset", "offset"]] = pred[["onset", "offset"]].clip(0, cfg.max_len_seconds)
+                pred["filename"] = dataloader.dataset.filenames.iloc[indexes[j]]
+                dec_prediction_dfs[at_m] = dec_prediction_dfs[at_m].append(pred, ignore_index=True)
+        for at_m in fusion_strategy:
+            for c_th in test_thresholds:
+                if at:
+                    assert "at" in outputs
+                    audio_tags = outputs["at"]
+                    audio_tags = (audio_tags > c_th).long()
+                else:
+                    audio_tags = None
+                results = postprocessors['bbox'](outputs, orig_target_sizes, audio_tags=audio_tags, at_m=at_m)
+                for j, res in enumerate(results):
+                    for item in res:
+                        res[item] = res[item].cpu()
+                    pred = decoder.decode_strong(res, threshold=c_th)
+                    pred = pd.DataFrame(pred, columns=["event_label", "onset", "offset", "score"]).drop('score', axis=1)
+                    # Put them in seconds
+                    pred.loc[:, ["onset", "offset"]] = pred[["onset", "offset"]].clip(0, cfg.max_len_seconds)
+                    pred["filename"] = dataloader.dataset.filenames.iloc[indexes[j]]
+                    pred = pred.loc[:, ["filename","onset", "offset","event_label"]]
+                    psds_prediction_dfs[at_m, c_th] = psds_prediction_dfs[at_m, c_th].append(pred, ignore_index=True)
+                    psds_prediction_dfs[at_m, c_th].to_csv(
+                        os.path.join(at_m_path, f"predictions_th_{c_th:.2f}.tsv"),
+                        sep="\t",
+                        index=False,
+                    )
+        decoding_time += time.time() - decoding_start
+        (input_data, targets), indexes = prefetcher.next()
 
     logger.info("Val averaged stats:" + metric_logger.__str__())
     epoch_time = time.time() - epoch_time
     logger.info(f"val_epoch_time:{epoch_time}  decoding_time:{decoding_time}")
-    return psds_prediction_dfs, SED_SEDT_psds_prediction_dfs_improve1, SED_SEDT_psds_prediction_dfs_improve2, SED_SEDT_psds_prediction_dfs_improve12
+    return audio_tag_dfs, dec_prediction_dfs, psds_prediction_dfs
+
 
 def get_pseudo_labels(tea_outputs, postprocessor, orig_unlabel_target_sizes, target_unlabeled, pseudo_labels_counter,
                       threshold=0.5, del_overlap=True, classwise_threshold=None):
